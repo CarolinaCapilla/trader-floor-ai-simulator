@@ -1,0 +1,41 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+.pyre/
+
+# Virtualenvs
+.venv/
+venv/
+
+# Node/npm
+node_modules/
+.npm/
+
+# OS/Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Data & logs
+accounts.db
+memory/
+logs/
+*.log
+
+# UV/lock
+uv.lock
+
+# Cache
+.cache/
