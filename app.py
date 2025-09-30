@@ -5,6 +5,7 @@ from trading_floor import names, lastnames, short_model_names
 import plotly.express as px
 from accounts import Account
 from database import read_log
+import os
 
 mapper = {
     "trace": Color.WHITE,
@@ -187,4 +188,5 @@ def create_ui():
 
 if __name__ == "__main__":
     ui = create_ui()
-    ui.launch(inbrowser=True)
+    port = int(os.getenv("PORT", "7860"))
+    ui.launch(server_name="0.0.0.0", server_port=port, inbrowser=False)
