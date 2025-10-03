@@ -8,6 +8,7 @@ dependencies = [
     # Minimal runtime dependencies (aligned with requirements.txt)
     "gradio>=5.47.2,<6.0.0",
     "openai>=1.68.2,<2.0.0",
+    "openai-agents>=0.0.15",
     "python-dotenv>=1.0.1,<2.0.0",
     "pydantic>=2.9.0,<3.0.0",
     "requests>=2.32.3,<3.0.0",
@@ -15,6 +16,8 @@ dependencies = [
     "plotly>=5.24.0,<6.0.0",
     "polygon-api-client>=1.14.5,<2.0.0",
     "mcp>=1.15.0,<2.0.0",
+    "mcp-server-fetch>=2025.1.17",
+    "mcp[cli]>=1.5.0",
     # python-dateutil is a transitive dependency of pandas; keep implicit.
 ]
 
@@ -41,9 +44,6 @@ full = [
     "langgraph-checkpoint-sqlite>=2.0.6",
     "langsmith>=0.3.18",
     "lxml>=5.3.1",
-    "mcp-server-fetch>=2025.1.17",
-    "mcp[cli]>=1.5.0",
-    "openai-agents>=0.0.15",
     "playwright>=1.51.0",
     "psutil>=7.0.0",
     "pypdf>=5.4.0",
