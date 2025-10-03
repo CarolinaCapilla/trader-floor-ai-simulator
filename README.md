@@ -1,3 +1,14 @@
+---
+title: "Trader Floor AI Simulator"
+emoji: "📈"
+colorFrom: blue
+colorTo: green
+sdk: gradio
+sdk_version: "5.47.2"
+app_file: app.py
+pinned: false
+---
+
 # Trader Floor AI Simulator
 
 An agentic trading floor simulator where multiple AI traders research, decide, and trade on a schedule. Includes a real-time Gradio dashboard, local account database, and pluggable MCP servers for market data, accounts, and push notifications.
@@ -38,22 +49,25 @@ Core components:
 ## 🛠️ Installation
 
 1. Clone the repository
+
    ```bash
    git clone <your-repo-url>
    cd trader-floor-ai-simulator
    ```
 
 2. Install dependencies
+
    ```bash
    # with uv (recommended)
    uv sync
-   
+
    # or with pip
    pip install -r requirements.txt
    ```
 
 3. Set up environment variables
    Create a `.env` in the project root:
+
    ```env
    # Server and scheduling
    RUN_EVERY_N_MINUTES=60
@@ -86,6 +100,7 @@ Core components:
 ```bash
 uv run app.py
 ```
+
 - Opens the dashboard in your browser. It auto-refreshes logs (~0.5s) and portfolio/chart/holdings/transactions (~120s). Adjust timers in `app.py` if needed.
 
 ### Run Traders on a Schedule
@@ -100,6 +115,7 @@ MAX_ITERATIONS=3 uv run trading_floor.py
 # run continuously every N minutes
 MAX_ITERATIONS=1000000 RUN_EVERY_N_MINUTES=60 uv run trading_floor.py
 ```
+
 - Press Ctrl+C to stop when running continuously.
 
 ## 📁 Project Structure
@@ -156,6 +172,7 @@ This project is licensed under the MIT License — add a `LICENSE` file if missi
 ### Debug Mode
 
 Enable additional logging in your shell as needed (example):
+
 ```bash
 export MAX_ITERATIONS=1
 export RUN_EVERY_N_MINUTES=1
