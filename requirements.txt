@@ -42,8 +42,8 @@ attrs==25.3.0
     #   aiohttp
     #   jsonschema
     #   referencing
-audioop-lts==0.2.2
-    # via gradio
+audioop-lts==0.2.2 ; python_version >= "3.13"
+    # via gradio (only needed on Python >=3.13 where audioop was removed)
 autogen-agentchat==0.7.5
     # via agents (pyproject.toml)
 autogen-core==0.7.5

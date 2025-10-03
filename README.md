@@ -41,7 +41,9 @@ Core components:
 
 ## 📋 Prerequisites
 
-- Python 3.12+
+- Python 3.12+ (Hugging Face Spaces defaults to Python 3.10 unless you set a runtime. If using HF Spaces, either:
+   - Add a `runtime.txt` with `python-3.12` OR
+   - Remove dependencies that require newer stdlib behavior.)
 - [`uv`](https://github.com/astral-sh/uv) for fast installs/runs (or pip)
 - Optional: Polygon API key (for market data MCP)
 - Optional: Pushover credentials (for notifications)
