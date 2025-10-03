@@ -3,7 +3,8 @@ from database import write_log
 import secrets
 import string
 
-ALPHANUM = string.ascii_lowercase + string.digits 
+ALPHANUM = string.ascii_lowercase + string.digits
+
 
 def make_trace_id(tag: str) -> str:
     """
@@ -12,15 +13,16 @@ def make_trace_id(tag: str) -> str:
     """
     tag += "0"
     pad_len = 32 - len(tag)
-    random_suffix = ''.join(secrets.choice(ALPHANUM) for _ in range(pad_len))
+    random_suffix = "".join(secrets.choice(ALPHANUM) for _ in range(pad_len))
     return f"trace_{tag}{random_suffix}"
+
 
 class LogTracer(TracingProcessor):
 
     def get_name(self, trace_or_span: Trace | Span) -> str | None:
         trace_id = trace_or_span.trace_id
         name = trace_id.split("_")[1]
-        if '0' in name:
+        if "0" in name:
             return name.split("0")[0]
         else:
             return None
@@ -58,7 +60,7 @@ class LogTracer(TracingProcessor):
             message = "Ended"
             if span.span_data:
                 if span.span_data.type:
-                    
+
                     message += f" {span.span_data.type}"
                 if hasattr(span.span_data, "name") and span.span_data.name:
                     message += f" {span.span_data.name}"

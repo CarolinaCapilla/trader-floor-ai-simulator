@@ -40,6 +40,7 @@ function refresh() {
 }
 """
 
+
 class Color(Enum):
     RED = "#dd0000"
     GREEN = "#00dd00"

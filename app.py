@@ -34,7 +34,9 @@ class Trader:
         return self.account.get_strategy()
 
     def get_portfolio_value_df(self) -> pd.DataFrame:
-        df = pd.DataFrame(self.account.portfolio_value_time_series, columns=["datetime", "value"])
+        df = pd.DataFrame(
+            self.account.portfolio_value_time_series, columns=["datetime", "value"]
+        )
         df["datetime"] = pd.to_datetime(df["datetime"])
         return df
 
@@ -61,7 +63,10 @@ class Trader:
             return pd.DataFrame(columns=["Symbol", "Quantity"])
 
         df = pd.DataFrame(
-            [{"Symbol": symbol, "Quantity": quantity} for symbol, quantity in holdings.items()]
+            [
+                {"Symbol": symbol, "Quantity": quantity}
+                for symbol, quantity in holdings.items()
+            ]
         )
         return df
 
@@ -69,7 +74,9 @@ class Trader:
         """Convert transactions to DataFrame for display"""
         transactions = self.account.list_transactions()
         if not transactions:
-            return pd.DataFrame(columns=["Timestamp", "Symbol", "Quantity", "Price", "Rationale"])
+            return pd.DataFrame(
+                columns=["Timestamp", "Symbol", "Quantity", "Price", "Rationale"]
+            )
 
         return pd.DataFrame(transactions)
 
@@ -109,7 +116,9 @@ class TraderView:
                 self.portfolio_value = gr.HTML(self.trader.get_portfolio_value)
             with gr.Row():
                 self.chart = gr.Plot(
-                    self.trader.get_portfolio_value_chart, container=True, show_label=False
+                    self.trader.get_portfolio_value_chart,
+                    container=True,
+                    show_label=False,
                 )
             with gr.Row(variant="panel"):
                 self.log = gr.HTML(self.trader.get_logs)
@@ -172,12 +181,18 @@ def create_ui():
 
     traders = [
         Trader(trader_name, lastname, model_name)
-        for trader_name, lastname, model_name in zip(names, lastnames, short_model_names)
+        for trader_name, lastname, model_name in zip(
+            names, lastnames, short_model_names
+        )
     ]
     trader_views = [TraderView(trader) for trader in traders]
 
     with gr.Blocks(
-        title="Traders", css=css, js=js, theme=gr.themes.Default(primary_hue="sky"), fill_width=True
+        title="Traders",
+        css=css,
+        js=js,
+        theme=gr.themes.Default(primary_hue="sky"),
+        fill_width=True,
     ) as ui:
         with gr.Row():
             for trader_view in trader_views:

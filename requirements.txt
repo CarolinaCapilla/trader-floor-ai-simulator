@@ -42,6 +42,8 @@ attrs==25.3.0
     #   aiohttp
     #   jsonschema
     #   referencing
+audioop-lts==0.2.2
+    # via gradio
 autogen-agentchat==0.7.5
     # via agents (pyproject.toml)
 autogen-core==0.7.5
@@ -624,10 +626,8 @@ types-requests==2.32.4.20250913
     # via openai-agents
 typing-extensions==4.15.0
     # via
-    #   aiosignal
     #   aiosqlite
     #   anthropic
-    #   anyio
     #   autogen-core
     #   azure-ai-agents
     #   azure-ai-projects
@@ -649,11 +649,8 @@ typing-extensions==4.15.0
     #   pydantic
     #   pydantic-core
     #   pyee
-    #   pyopenssl
-    #   referencing
     #   semantic-kernel
     #   sqlalchemy
-    #   starlette
     #   typer
     #   typing-inspect
     #   typing-inspection
