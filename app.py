@@ -1,4 +1,5 @@
 import gradio as gr
+from typing import Any
 from util import css, js, Color
 import pandas as pd
 from trading_floor import names, lastnames, short_model_names
@@ -88,7 +89,7 @@ class Trader:
         emoji = "⬆" if pnl >= 0 else "⬇"
         return f"<div style='text-align: center;background-color:{color};'><span style='font-size:32px'>${portfolio_value:,.0f}</span><span style='font-size:24px'>&nbsp;&nbsp;&nbsp;{emoji}&nbsp;${pnl:,.0f}</span></div>"
 
-    def get_logs(self, previous=None) -> str:
+    def get_logs(self, previous=None) -> Any:
         logs = read_log(self.name, last_n=13)
         response = ""
         for log in logs:
@@ -191,17 +192,21 @@ def create_ui():
         title="Traders",
         css=css,
         js=js,
-        theme=gr.themes.Default(primary_hue="sky"),
+        theme="soft",
         fill_width=True,
     ) as ui:
-        with gr.Row():
-            for trader_view in trader_views:
-                trader_view.make_ui()
+        # Render traders in rows of two
+        for i in range(0, len(trader_views), 2):
+            with gr.Row():
+                for trader_view in trader_views[i : i + 2]:
+                    trader_view.make_ui()
 
     return ui
 
 
 if __name__ == "__main__":
     ui = create_ui()
-    port = int(os.getenv("PORT", "7860"))
-    ui.launch(server_name="0.0.0.0", server_port=port, inbrowser=False)
+    # Prefer GRADIO_SERVER_PORT/HOST if provided; fall back to PORT and 0.0.0.0
+    port_env = os.getenv("GRADIO_SERVER_PORT") or os.getenv("PORT") or "7860"
+    host = os.getenv("GRADIO_SERVER_NAME", os.getenv("HOST", "0.0.0.0"))
+    ui.launch(server_name=host, server_port=int(port_env), inbrowser=False)
