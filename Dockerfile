@@ -9,14 +9,13 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Copy dependency files
-COPY pyproject.toml requirements.txt ./
+# Copy all files first (needed for editable install)
+COPY . .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -e .
-
-# Copy application code
-COPY . .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -e .
 
 # Create data directory for persistent DB
 RUN mkdir -p /app/data /app/memory
