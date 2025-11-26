@@ -18,15 +18,32 @@ def needs_initialization():
         print("Database file does not exist, needs initialization")
         return True
 
-    # Check if database has any traders
+    # Check if database has any traders AND trading activity
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
+
+        # Check if we have accounts
         cursor.execute("SELECT COUNT(*) FROM accounts")
-        count = cursor.fetchone()[0]
+        account_count = cursor.fetchone()[0]
+
+        if account_count == 0:
+            print("No accounts found, needs initialization")
+            conn.close()
+            return True
+
+        # Check if any account has trading activity (non-empty holdings or transactions)
+        cursor.execute("SELECT COUNT(*) FROM accounts WHERE holdings != '{}'")
+        active_count = cursor.fetchone()[0]
+
         conn.close()
-        print(f"Database has {count} accounts")
-        return count == 0
+        print(
+            f"Database has {account_count} accounts, {active_count} with trading activity"
+        )
+
+        # Need initialization if no accounts have any holdings
+        return active_count == 0
+
     except Exception as e:
         print(f"Error checking database (will initialize): {e}")
         return True
