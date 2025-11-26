@@ -1,20 +1,24 @@
 from contextlib import AsyncExitStack
-from accounts_client import read_accounts_resource, read_strategy_resource
-from tracers import make_trace_id
-from agents import Agent, Tool, Runner, OpenAIChatCompletionsModel, trace
-from openai import AsyncOpenAI
-from dotenv import load_dotenv
-import os
 import json
+import os
+
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+
+from agents import Agent, Tool, Runner, OpenAIChatCompletionsModel, trace
 from agents.mcp import MCPServerStdio
-from templates import (
+
+from trader_floor_ai.domain.accounts import Account
+from trader_floor_ai.integration.mcp_params import researcher_mcp_server_params
+from trader_floor_ai.integration.tools_local import make_local_tools
+from trader_floor_ai.agents.templates import (
     researcher_instructions,
     trader_instructions,
     trade_message,
     rebalance_message,
     research_tool,
 )
-from mcp_params import trader_mcp_server_params, researcher_mcp_server_params
+
 
 load_dotenv(override=True)
 
@@ -79,18 +83,21 @@ class Trader:
         self.do_trade = True
 
     async def create_agent(self, trader_mcp_servers, researcher_mcp_servers) -> Agent:
+        # Local in-process tools (accounts, market, push)
+        local_tools = make_local_tools()
+        # Researcher tool still via MCP servers
         tool = await get_researcher_tool(researcher_mcp_servers, self.model_name)
         self.agent = Agent(
             name=self.name,
             instructions=trader_instructions(self.name),
             model=get_model(self.model_name),
-            tools=[tool],
-            mcp_servers=trader_mcp_servers,
+            tools=[tool, *local_tools],
+            mcp_servers=[],
         )
         return self.agent
 
     async def get_account_report(self) -> str:
-        account = await read_accounts_resource(self.name)
+        account = Account.get(self.name).report()
         account_json = json.loads(account)
         account_json.pop("portfolio_value_time_series", None)
         return json.dumps(account_json)
@@ -98,37 +105,41 @@ class Trader:
     async def run_agent(self, trader_mcp_servers, researcher_mcp_servers):
         self.agent = await self.create_agent(trader_mcp_servers, researcher_mcp_servers)
         account = await self.get_account_report()
-        strategy = await read_strategy_resource(self.name)
+        strategy = Account.get(self.name).get_strategy()
         message = (
             trade_message(self.name, strategy, account)
             if self.do_trade
             else rebalance_message(self.name, strategy, account)
         )
         await Runner.run(self.agent, message, max_turns=MAX_TURNS)
+        # Print a concise summary to the terminal so runs are visible
+        try:
+            summary = json.loads(Account.get(self.name).report())
+            bal = summary.get("balance")
+            holdings = summary.get("holdings")
+            print(f"[{self.name}] Balance: {bal:.2f}; Holdings: {holdings}")
+        except Exception as e:
+            print(f"[{self.name}] Unable to print summary: {e}")
 
     async def run_with_mcp_servers(self):
+        # Only start Researcher MCP servers; Trader tools are local now
         async with AsyncExitStack() as stack:
-            trader_mcp_servers = [
+            researcher_mcp_servers = [
                 await stack.enter_async_context(
-                    MCPServerStdio(params, client_session_timeout_seconds=120)
+                    MCPServerStdio(params, client_session_timeout_seconds=120)  # type: ignore[arg-type]
                 )
-                for params in trader_mcp_server_params
+                for params in researcher_mcp_server_params(self.name)
             ]
-            async with AsyncExitStack() as stack:
-                researcher_mcp_servers = [
-                    await stack.enter_async_context(
-                        MCPServerStdio(params, client_session_timeout_seconds=120)
-                    )
-                    for params in researcher_mcp_server_params(self.name)
-                ]
-                await self.run_agent(trader_mcp_servers, researcher_mcp_servers)
+            await self.run_agent(
+                trader_mcp_servers=None, researcher_mcp_servers=researcher_mcp_servers
+            )
 
     async def run_with_trace(self):
         trace_name = (
             f"{self.name}-trading" if self.do_trade else f"{self.name}-rebalancing"
         )
-        trace_id = make_trace_id(f"{self.name.lower()}")
-        with trace(trace_name, trace_id=trace_id):
+        # Use default tracing without custom trace_id or processors
+        with trace(trace_name):
             await self.run_with_mcp_servers()
 
     async def run(self):
@@ -137,3 +148,6 @@ class Trader:
         except Exception as e:
             print(f"Error running trader {self.name}: {e}")
         self.do_trade = not self.do_trade
+
+
+__all__ = ["Trader", "get_researcher", "get_researcher_tool"]

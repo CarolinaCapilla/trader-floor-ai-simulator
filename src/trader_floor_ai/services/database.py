@@ -1,3 +1,9 @@
+"""Canonical database services module.
+
+Migrated from the legacy root `database.py` to packaged services. Root module
+will import from here to preserve compatibility.
+"""
+
 import sqlite3
 import json
 from datetime import datetime
@@ -91,8 +97,8 @@ def read_log(name: str, last_n=10):
         cursor = conn.cursor()
         cursor.execute(
             """
-            SELECT datetime, type, message FROM logs 
-            WHERE name = ? 
+            SELECT datetime, type, message FROM logs
+            WHERE name = ?
             ORDER BY datetime DESC
             LIMIT ?
         """,
@@ -123,3 +129,22 @@ def read_market(date: str) -> dict | None:
         cursor.execute("SELECT data FROM market WHERE date = ?", (date,))
         row = cursor.fetchone()
         return json.loads(row[0]) if row else None
+
+
+# --- Maintenance helpers ---
+
+
+def _clear_table(table: str) -> None:
+    with sqlite3.connect(DB) as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"DELETE FROM {table}")
+        conn.commit()
+
+
+def reset_database() -> None:
+    """Delete all rows from accounts, logs, and market tables.
+
+    Tables remain intact and will be reused. Use this before re-seeding accounts.
+    """
+    for table in ("accounts", "logs", "market"):
+        _clear_table(table)
