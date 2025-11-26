@@ -6,12 +6,14 @@ will import from here to preserve compatibility.
 
 import sqlite3
 import json
+import os
 from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-DB = "accounts.db"
+# Use persistent path in Railway via volume mount, fallback to local for dev
+DB = os.getenv("DB_PATH", "accounts.db")
 
 
 with sqlite3.connect(DB) as conn:

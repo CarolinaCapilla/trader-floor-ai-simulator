@@ -1,0 +1,20 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "sh -c 'python trading_floor.py & python app.py'"
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+# Volume for database persistence
+[[deploy.volumes]]
+mountPath = "/app/data"
+name = "trading-data"
+
+# Volume for memory MCP servers
+[[deploy.volumes]]
+mountPath = "/app/memory"
+name = "trading-memory"

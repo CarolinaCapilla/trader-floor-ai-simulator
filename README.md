@@ -13,7 +13,42 @@ pinned: false
 
 An agentic trading floor simulator where multiple AI traders research, decide, and trade on a schedule. Includes a real-time Gradio dashboard, local account database, and pluggable MCP servers for market data, accounts, and push notifications.
 
-## 🚀 Features
+## 🚀 Quick Start
+
+### Local Development
+
+```bash
+# Clone and install
+git clone https://github.com/CarolinaCapilla/trader-floor-ai-simulator.git
+cd trader-floor-ai-simulator
+uv pip install -e .
+
+# Set up environment variables (copy .env.example to .env)
+# Add your API keys: OPENAI_API_KEY, POLYGON_API_KEY, etc.
+
+# Run the UI
+python app.py
+
+# Or run the scheduler
+python trading_floor.py
+```
+
+### Deploy to Railway (Recommended for Scheduled Trading)
+
+```bash
+railway login
+railway init
+railway up
+```
+
+See [RAILWAY.md](./RAILWAY.md) for complete deployment guide with:
+
+- Persistent database via volumes
+- Daily scheduled trading runs
+- Environment variable setup
+- Monitoring and troubleshooting
+
+## 🏗️ Features
 
 - **AI-Powered Trading Loop**: Each trader researches, generates a plan, and executes trades
 - **Multi-Agent Composition**: Trader agents leverage a dedicated Researcher agent via MCP
@@ -42,8 +77,8 @@ Core components:
 ## 📋 Prerequisites
 
 - Python 3.12+ (Hugging Face Spaces defaults to Python 3.10 unless you set a runtime. If using HF Spaces, either:
-   - Add a `runtime.txt` with `python-3.12` OR
-   - Remove dependencies that require newer stdlib behavior.)
+  - Add a `runtime.txt` with `python-3.12` OR
+  - Remove dependencies that require newer stdlib behavior.)
 - [`uv`](https://github.com/astral-sh/uv) for fast installs/runs (or pip)
 - Optional: Polygon API key (for market data MCP)
 - Optional: Pushover credentials (for notifications)
