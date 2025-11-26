@@ -26,6 +26,6 @@ ENV DB_PATH=/app/data/accounts.db
 # Expose Gradio port
 EXPOSE 7860
 
-# Default command runs both scheduler and UI
-# The scheduler runs in background, UI runs in foreground
-CMD ["sh", "-c", "python trading_floor.py & python app.py"]
+# Run only the UI - scheduler runs via separate Railway cron or service
+# For now, just run the UI so we can verify it works
+CMD ["python", "app.py"]
