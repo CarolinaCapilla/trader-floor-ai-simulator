@@ -5,9 +5,12 @@ load_dotenv(override=True)
 
 
 def researcher_mcp_server_params(name: str):
-    # Keep memory under the project root (current working directory), as before.
-    os.makedirs("memory", exist_ok=True)
-    libsql_path = os.path.abspath(os.path.join("memory", f"{name}.db"))
+    # Use persistent data volume for memory DBs (Railway provides single volume)
+    # Falls back to local "memory" dir for dev environments
+    data_dir = os.getenv("DB_PATH", "accounts.db").rsplit("/", 1)[0]  # Get /app/data or "."
+    memory_dir = os.path.join(data_dir, "memory") if data_dir != "." else "memory"
+    os.makedirs(memory_dir, exist_ok=True)
+    libsql_path = os.path.abspath(os.path.join(memory_dir, f"{name}.db"))
     libsql_url = f"file:{libsql_path}"
 
     # Minimal env to quiet npx so stdout stays JSON-only for the MCP client

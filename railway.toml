@@ -9,12 +9,7 @@ healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
-# Volume for database persistence
+# Volume for database and memory persistence (Railway allows 1 volume per service)
 [[deploy.volumes]]
 mountPath = "/app/data"
 name = "trading-data"
-
-# Volume for memory MCP servers
-[[deploy.volumes]]
-mountPath = "/app/memory"
-name = "trading-memory"
