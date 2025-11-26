@@ -24,8 +24,11 @@ async def run_one_cycle():
     traders = create_traders()
     print(f"Created {len(traders)} traders")
 
-    # Run all traders
-    await asyncio.gather(*[trader.run() for trader in traders])
+    # Run traders sequentially to avoid MCP server resource contention
+    for trader in traders:
+        print(f"Running {trader.name}...")
+        await trader.run()
+
     print("Trading cycle complete!")
 
 

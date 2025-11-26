@@ -7,8 +7,16 @@ load_dotenv(override=True)
 def researcher_mcp_server_params(name: str):
     # Use persistent data volume for memory DBs (Railway provides single volume)
     # Falls back to local "memory" dir for dev environments
-    data_dir = os.getenv("DB_PATH", "accounts.db").rsplit("/", 1)[0]  # Get /app/data or "."
-    memory_dir = os.path.join(data_dir, "memory") if data_dir != "." else "memory"
+    db_path = os.getenv("DB_PATH", "accounts.db")
+
+    # If DB_PATH contains a directory path, use that directory for memory
+    # Otherwise (local dev with just "accounts.db"), use current dir
+    if "/" in db_path:
+        data_dir = db_path.rsplit("/", 1)[0]  # Get /app/data from /app/data/accounts.db
+        memory_dir = os.path.join(data_dir, "memory")
+    else:
+        memory_dir = "memory"  # Local dev: memory/ in current directory
+
     os.makedirs(memory_dir, exist_ok=True)
     libsql_path = os.path.abspath(os.path.join(memory_dir, f"{name}.db"))
     libsql_url = f"file:{libsql_path}"

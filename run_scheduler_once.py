@@ -24,7 +24,12 @@ async def main():
 
         traders = create_traders()
         print(f"Created {len(traders)} traders, starting execution...")
-        await asyncio.gather(*[trader.run() for trader in traders])
+
+        # Run traders sequentially to avoid MCP server resource contention
+        for trader in traders:
+            print(f"Running {trader.name}...")
+            await trader.run()
+
         print("Trading run completed successfully")
     except Exception as e:
         print(f"Error during trading run: {e}")
