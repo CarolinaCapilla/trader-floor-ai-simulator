@@ -23,8 +23,8 @@ RUN mkdir -p /app/data /app/memory
 # Set environment variable for DB path
 ENV DB_PATH=/app/data/accounts.db
 
-# Expose Gradio port
-EXPOSE 7860
+# Railway sets PORT dynamically, no need to expose specific port
+# The app will bind to whatever Railway provides via $PORT env var
 
 # Run only the UI - scheduler runs via separate Railway cron or service
 # For now, just run the UI so we can verify it works
