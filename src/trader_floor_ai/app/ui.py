@@ -192,4 +192,17 @@ def launch():
     ui = create_ui()
     port_env = os.getenv("GRADIO_SERVER_PORT") or os.getenv("PORT") or "7860"
     host = os.getenv("GRADIO_SERVER_NAME", os.getenv("HOST", "0.0.0.0"))
-    ui.launch(server_name=host, server_port=int(port_env), inbrowser=False)
+    print(f"Starting Gradio UI on {host}:{port_env}")
+    try:
+        ui.launch(
+            server_name=host, 
+            server_port=int(port_env), 
+            inbrowser=False,
+            share=False,
+            show_error=True
+        )
+    except Exception as e:
+        print(f"Error launching Gradio: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
