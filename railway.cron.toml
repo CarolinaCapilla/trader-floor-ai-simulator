@@ -1,0 +1,11 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "python run_scheduler_once.py"
+
+# Share the same volume as the main service
+[[deploy.volumes]]
+mountPath = "/app/data"
+name = "trading-data"
