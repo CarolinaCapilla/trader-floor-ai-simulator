@@ -8,12 +8,12 @@ from trader_floor_ai.services.market import is_market_open  # type: ignore
 
 load_dotenv(override=True)
 
-RUN_EVERY_N_MINUTES = int(os.getenv("RUN_EVERY_N_MINUTES", "60"))
+RUN_EVERY_N_MINUTES = int(os.getenv("RUN_EVERY_N_MINUTES", "1440"))  # 24 hours default
 RUN_EVEN_WHEN_MARKET_IS_CLOSED = (
     os.getenv("RUN_EVEN_WHEN_MARKET_IS_CLOSED", "false").strip().lower() == "true"
 )
 USE_MANY_MODELS = os.getenv("USE_MANY_MODELS", "false").strip().lower() == "true"
-MAX_ITERATIONS = int(os.getenv("MAX_ITERATIONS", "1"))
+MAX_ITERATIONS = int(os.getenv("MAX_ITERATIONS", "7"))  # Run for 7 days
 
 names = ["Jose Manuel", "Jaime", "Garbi", "Carmen"]
 lastnames = ["Patience", "Bold", "Systematic", "Crypto"]
