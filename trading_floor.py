@@ -7,8 +7,8 @@ from trader_floor_ai.scheduler.reset import reset_traders  # type: ignore
 
 load_dotenv(override=True)
 
-RUN_EVERY_N_MINUTES = int(os.getenv("RUN_EVERY_N_MINUTES", "60"))
-MAX_ITERATIONS = int(os.getenv("MAX_ITERATIONS", "1"))
+RUN_EVERY_N_MINUTES = int(os.getenv("RUN_EVERY_N_MINUTES", "1440"))  # 24 hours default
+MAX_ITERATIONS = int(os.getenv("MAX_ITERATIONS", "7"))  # Run for 7 days
 RESET_ON_START = os.getenv("RESET_ON_START", "false").strip().lower() == "true"
 
 
