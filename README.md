@@ -11,7 +11,16 @@ pinned: false
 
 # Trader Floor AI Simulator
 
-An agentic trading floor simulator where multiple AI traders research, decide, and trade on a schedule. Includes a real-time Gradio dashboard, local account database, and pluggable MCP servers for market data, accounts, and push notifications.
+A group of AI traders with different strategies research the market, decide and trade a simulated portfolio on a daily schedule, with a live dashboard to watch them.
+
+This started as the autonomous traders project from Ed Donner's agentic AI course. What I changed:
+- Restructured the flat scripts into a package (domain, services, integration, agents, scheduler, UI)
+- Replaced the account, market and notification MCP servers with in-process tools, and ran traders sequentially after concurrent MCP servers kept conflicting
+- Kept the researcher's MCP servers (fetch, Brave search, libSQL memory) and silenced npm output so their stdio stays valid JSON
+- Dockerised it and deployed it to Railway with a persistent volume, first-run database setup and a daily schedule
+
+Stack: Python, OpenAI Agents SDK, MCP, Gradio, SQLite, Docker, Railway
+
 
 ## 🚀 Quick Start
 
